@@ -193,7 +193,17 @@ public class PlayService {
 			mLeaderboardsClient.submitScore(id, score);
 		} else { Log.i(TAG, "Google not connected calling connect"); }
 	}
+	
+	public void leaderboard_get(String id) {
+		connect();
 
+		if (isConnected()) {
+			Log.i(TAG, "Leaderboard::Get::" + id);
+
+			mLeaderboardsClient.loadCurrentPlayerLeaderboardScore(id, TIME_SPAN_ALL_TIME, COLLECTION_PUBLIC);
+		} else { Log.i(TAG, "Google not connected calling connect"); }
+	}
+	
 	public void leaderboard_show(final String id) {
 		connect();
 
