@@ -12,7 +12,7 @@ import android.content.IntentSender.SendIntentException;
 import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
-
+import android.net.ConnectivityManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,12 +31,18 @@ public class GooglePlay extends Godot.SingletonBase {
 			"init", "login", "logout", "unlock_achievement",
 			"increase_achievement", "show_achievements",
 			"submit_leaderboard", "show_leaderboard", "show_leaderboards",
-			"get_version_code"
+			"get_version_code", "has_internet"
 		});
 
 		activity = p_activity;
 	}
 
+	public boolean has_internet()
+	{
+		ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+		return cm.getActiveNetworkInfo() != null;
+	}
+	
 	public int get_version_code(final int instanceID) {
 		try {
 			final PackageInfo pInfo =
@@ -47,7 +53,6 @@ public class GooglePlay extends Godot.SingletonBase {
 
 		return 0;
 	}
-
 
 	public void init(final int instanceID) {
 		activity.runOnUiThread(new Runnable() {
