@@ -71,6 +71,16 @@ public class GUtils {
 		new Object[] { TAG, key, value });
 	}
 
+	public static void callScript(String func, Object[] params)
+	{
+		if (script_instanceID == -1) {
+			Log.d(TAG, "Script instance not set");
+			return;
+		}
+
+		GodotLib.calldeferred(script_instanceID, func, params);
+	}
+
 	public static boolean checkGooglePlayService(Activity activity) {
 		return true;
 	}

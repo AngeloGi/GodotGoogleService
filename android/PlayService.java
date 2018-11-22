@@ -198,9 +198,27 @@ public class PlayService {
 		connect();
 
 		if (isConnected()) {
-			Log.i(TAG, "Leaderboard::Get::" + id);
+			mLeaderboardsClient.loadCurrentPlayerLeaderboardScore(id, TIME_SPAN_ALL_TIME, COLLECTION_PUBLIC)
+			.addOnSuccessListener(new OnSuccessListener<AnnotatedData<LeaderboardScore>>() {
+				@Override
+				public void onSuccess (AnnotatedData<LeaderboardScore> data) {
+					if (data.isStale())
+						Log.d(TAG, "Leaderboard::Get::Failed:: Stale data"
+					else
+					{
+						LeaderboardScore score = data.get();
+						Log.d(TAG, "Leaderboard::Get::" + id);
+						GUtils.callScript("_player_score_received", new Object[] { score.getRawScore() });
+					}
+				}
+			})
+			.addOnFailureListener(new OnFailureListener() {
+				@Override
+				public void onFailure(@NonNull Exception e) {
+					Log.d(TAG, "Leaderboard::Get::Failed:: " + e.toString());
+				}
+			});
 
-			mLeaderboardsClient.loadCurrentPlayerLeaderboardScore(id, TIME_SPAN_ALL_TIME, COLLECTION_PUBLIC);
 		} else { Log.i(TAG, "Google not connected calling connect"); }
 	}
 	
