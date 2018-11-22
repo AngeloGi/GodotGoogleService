@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.LeaderboardsClient;
+import com.google.android.gms.games.Leaderboard.LeaderboardScore;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.PlayersClient;
 import com.google.android.gms.tasks.Task;
