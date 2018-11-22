@@ -34,7 +34,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.LeaderboardsClient;
-import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.PlayersClient;
 import com.google.android.gms.tasks.Task;
@@ -199,10 +199,12 @@ public class PlayService {
 		connect();
 
 		if (isConnected()) {
-			mLeaderboardsClient.loadCurrentPlayerLeaderboardScore(id, TIME_SPAN_ALL_TIME, COLLECTION_PUBLIC)
-			.addOnSuccessListener(new OnSuccessListener<LeaderboardScore>() {
+			mLeaderboardsClient.loadCurrentPlayerLeaderboardScore(id,
+				leaderboard.LeaderboardVariant.TIME_SPAN_ALL_TIME,
+				leaderboard.LeaderboardVariant.COLLECTION_PUBLIC)
+			.addOnSuccessListener(new OnSuccessListener<leaderboard.LeaderboardScore>() {
 				@Override
-				public void onSuccess (LeaderboardScore score) {
+				public void onSuccess (leaderboard.LeaderboardScore score) {
 					Log.d(TAG, "Leaderboard::Get::" + id);
 					GUtils.callScript("_player_score_received", new Object[] { score.getRawScore() });
 				}
