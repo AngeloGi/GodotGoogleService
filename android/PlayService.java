@@ -203,7 +203,7 @@ public class PlayService {
 				@Override
 				public void onSuccess (AnnotatedData<LeaderboardScore> data) {
 					if (data.isStale())
-						Log.d(TAG, "Leaderboard::Get::Failed:: Stale data"
+						Log.d(TAG, "Leaderboard::Get::Failed:: Stale data");
 					else
 					{
 						LeaderboardScore score = data.get();
