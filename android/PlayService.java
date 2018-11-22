@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.AnnotatedData;
 import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
@@ -203,11 +204,18 @@ public class PlayService {
 			mLeaderboardsClient.loadCurrentPlayerLeaderboardScore(id,
 				LeaderboardVariant.TIME_SPAN_ALL_TIME,
 				LeaderboardVariant.COLLECTION_PUBLIC)
-			.addOnSuccessListener(new OnSuccessListener<LeaderboardScore>() {
+			.addOnSuccessListener(new OnSuccessListener<AnnotatedData<LeaderboardScore>>() {
 				@Override
-				public void onSuccess (LeaderboardScore score) {
-					Log.d(TAG, "Leaderboard::Get::" + id);
-					GUtils.callScript("_player_score_received", new Object[] { score.getRawScore() });
+				public void onSuccess (AnnotatedData<LeaderboardScore> data) {
+					if (data.isStale()) {
+						Log.d(TAG, "Leaderboard::Get::Failed:: Stale data");
+					}
+					else
+					{
+						LeaderboardScore score = data.get();
+						Log.d(TAG, "Leaderboard::Get::" + id);
+						GUtils.callScript("_player_score_received", new Object[] { score.getRawScore() });	
+					}
 				}
 			})
 			.addOnFailureListener(new OnFailureListener() {
