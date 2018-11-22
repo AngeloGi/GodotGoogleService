@@ -197,7 +197,7 @@ public class PlayService {
 		} else { Log.i(TAG, "Google not connected calling connect"); }
 	}
 	
-	public void leaderboard_get(String id) {
+	public void leaderboard_get(final String id) {
 		connect();
 
 		if (isConnected()) {
