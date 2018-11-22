@@ -199,17 +199,11 @@ public class PlayService {
 
 		if (isConnected()) {
 			mLeaderboardsClient.loadCurrentPlayerLeaderboardScore(id, TIME_SPAN_ALL_TIME, COLLECTION_PUBLIC)
-			.addOnSuccessListener(new OnSuccessListener<AnnotatedData<LeaderboardScore>>() {
+			.addOnSuccessListener(new OnSuccessListener<LeaderboardScore>() {
 				@Override
-				public void onSuccess (AnnotatedData<LeaderboardScore> data) {
-					if (data.isStale())
-						Log.d(TAG, "Leaderboard::Get::Failed:: Stale data");
-					else
-					{
-						LeaderboardScore score = data.get();
-						Log.d(TAG, "Leaderboard::Get::" + id);
-						GUtils.callScript("_player_score_received", new Object[] { score.getRawScore() });
-					}
+				public void onSuccess (LeaderboardScore score) {
+					Log.d(TAG, "Leaderboard::Get::" + id);
+					GUtils.callScript("_player_score_received", new Object[] { score.getRawScore() });
 				}
 			})
 			.addOnFailureListener(new OnFailureListener() {
