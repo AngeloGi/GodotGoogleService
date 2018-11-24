@@ -40,6 +40,10 @@ import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.PlayersClient;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.games.SnapshotsClient;
+import com.google.android.gms.games.snapshot.Snapshot;
+import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 
 public class PlayService {
 
@@ -72,7 +76,7 @@ public class PlayService {
 
         GoogleSignInOptions.Builder builder = 
             new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
-
+		builder.requestScopes(Drive.SCOPE_APPFOLDER);
 		GoogleSignInOptions gso = builder.build();
 		mGoogleSignInClient = GoogleSignIn.getClient(activity, gso);
 
@@ -119,6 +123,7 @@ public class PlayService {
 	public void succeedSignIn() {
 		Log.d(TAG, "Google signed in.");
 
+		mSnapshotsClient = Games.getSnapshotsClient(activity, mAccount);
 		mAchievementsClient = Games.getAchievementsClient(activity, mAccount);
 		mLeaderboardsClient = Games.getLeaderboardsClient(activity, mAccount);
 		mPlayersClient = Games.getPlayersClient(activity, mAccount);
@@ -144,6 +149,41 @@ public class PlayService {
                     }
 		});
 	}
+
+	// Saved games
+
+	public void save_game(final String game, final byte[] data) {
+		connect();
+
+		if (isConnected()) {
+			mSnapshotsClient.open(game, true, SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED)
+			.addOnSuccessListener(new OnSuccessListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
+				@Override
+				public void onSuccess (SnapshotsClient.DataOrConflict<Snapshot> unresolved_data) {
+					if (unresolved_data.isConflict()) {
+						//unresolved_data.getConflict();
+						Log.d(TAG, "Snapshot::Write::Conflict");
+					}
+					else
+					{
+						Snapshot snapshot = unresolved_data.getData();
+						Log.d(TAG, "Snapshot::Write::" + game);
+						snapshot.getSnapshotContents().writeBytes(data);
+						mSnapshotsClient.commitAndClose(snapshot, SnapshotMetadataChange.EMPTY_CHANGE);
+					}
+				}
+			})
+			.addOnFailureListener(new OnFailureListener() {
+				@Override
+				public void onFailure(@NonNull Exception e) {
+					Log.d(TAG, "Snapshot::Write::Failed:: " + e.toString());
+				}
+			});
+
+		} else { Log.i(TAG, "Google not connected calling connect"); }
+	}
+
+	// Achievements
 
 	public void achievement_unlock(final String achievement_id) {
 		connect();
@@ -187,6 +227,8 @@ public class PlayService {
 		} else { Log.i(TAG, "PlayGameServices: Google calling connect"); }
 	}
 
+	// Leaderboards
+
 	public void leaderboard_submit(String id, int score) {
 		connect();
 
@@ -201,17 +243,20 @@ public class PlayService {
 		connect();
 
 		if (isConnected()) {
+			GUtils.callScript("_player_score_received", new Object[] { new Integer(-2) });
 			mLeaderboardsClient.loadCurrentPlayerLeaderboardScore(id,
 				LeaderboardVariant.TIME_SPAN_ALL_TIME,
 				LeaderboardVariant.COLLECTION_PUBLIC)
 			.addOnSuccessListener(new OnSuccessListener<AnnotatedData<LeaderboardScore>>() {
 				@Override
 				public void onSuccess (AnnotatedData<LeaderboardScore> data) {
+					GUtils.callScript("_player_score_received", new Object[] { new Integer(-3) });
 					if (data.isStale()) {
 						Log.d(TAG, "Leaderboard::Get::Failed:: Stale data");
 					}
 					else
 					{
+						GUtils.callScript("_player_score_received", new Object[] { new Integer(-4) });
 						LeaderboardScore score = data.get();
 						Log.d(TAG, "Leaderboard::Get::" + id);
 						GUtils.callScript("_player_score_received", new Object[] { score.getRawScore() });	
@@ -415,6 +460,7 @@ public class PlayService {
 	private GoogleSignInClient mGoogleSignInClient;
 
 	private GoogleSignInAccount mAccount;
+	private SnapshotsClient mSnapshotsClient;
 	private AchievementsClient mAchievementsClient;
 	private LeaderboardsClient mLeaderboardsClient;
 	private PlayersClient mPlayersClient;
