@@ -256,7 +256,7 @@ public class PlayService {
 					{
 						LeaderboardScore score = data.get();
 						Log.d(TAG, "Leaderboard::Get::" + id);
-						GUtils.callScript("_player_score_received", new Object[] { new Long(score.getRawScore()) });	
+						GUtils.callScript("_player_score_received", new Object[] { new Integer((int) score.getRawScore()) });	
 					}
 				}
 			})
