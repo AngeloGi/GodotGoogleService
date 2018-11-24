@@ -243,23 +243,20 @@ public class PlayService {
 		connect();
 
 		if (isConnected()) {
-			GUtils.callScript("_player_score_received", new Object[] { new Integer(-2) });
 			mLeaderboardsClient.loadCurrentPlayerLeaderboardScore(id,
 				LeaderboardVariant.TIME_SPAN_ALL_TIME,
 				LeaderboardVariant.COLLECTION_PUBLIC)
 			.addOnSuccessListener(new OnSuccessListener<AnnotatedData<LeaderboardScore>>() {
 				@Override
 				public void onSuccess (AnnotatedData<LeaderboardScore> data) {
-					GUtils.callScript("_player_score_received", new Object[] { new Integer(-3) });
 					if (data.isStale()) {
 						Log.d(TAG, "Leaderboard::Get::Failed:: Stale data");
 					}
 					else
 					{
-						GUtils.callScript("_player_score_received", new Object[] { new Integer(-4) });
 						LeaderboardScore score = data.get();
 						Log.d(TAG, "Leaderboard::Get::" + id);
-						GUtils.callScript("_player_score_received", new Object[] { score.getRawScore() });	
+						GUtils.callScript("_player_score_received", new Object[] { new Integer(score.getRawScore()) });	
 					}
 				}
 			})

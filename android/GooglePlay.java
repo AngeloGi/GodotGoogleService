@@ -55,10 +55,8 @@ public class GooglePlay extends Godot.SingletonBase {
 	}
 
 	public void init(final int instanceID) {
-		GodotLib.calldeferred(instanceID, "_player_score_received", new Object[]{  new Integer(-10) });
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				GodotLib.calldeferred(instanceID, "_player_score_received", new Object[]{  new Integer(-11) });
 				PlayService.getInstance(activity).init(instanceID);
 			}
 		});
@@ -117,7 +115,6 @@ public class GooglePlay extends Godot.SingletonBase {
 	}
 
 	public void request_highscore(final String l_id) {
-		GUtils.callScript("_player_score_received", new Object[] { new Integer(-1) });
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				PlayService.getInstance(activity).leaderboard_get(l_id);
