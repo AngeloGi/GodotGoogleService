@@ -202,7 +202,7 @@ public class PlayService {
 					}
 					return null;
 				}
-			})addOnCompleteListener(new OnCompleteListener<byte[]>()) {
+			}).addOnCompleteListener(new OnCompleteListener<byte[]>() {
 				@Override
 				public void onComplete(@NonNull Task<byte[]> task) {
 					byte[] data = task.getResult();
