@@ -131,7 +131,7 @@ public class PlayService {
 		Games.getGamesClient(activity, mAccount).setViewForPopups(
 		activity.getWindow().getDecorView().findViewById(android.R.id.content));
 
-		GUtils.callScriptFunc("login", "true");
+		GUtils.callScript("_google_signed_in", new Object[] { });
 
 		mPlayersClient.getCurrentPlayer()
 		.addOnCompleteListener(new OnCompleteListener<Player>() {
