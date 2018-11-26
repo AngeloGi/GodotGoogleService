@@ -40,6 +40,7 @@ import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.PlayersClient;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.SnapshotsClient;
 import com.google.android.gms.games.snapshot.Snapshot;
@@ -160,23 +161,52 @@ public class PlayService {
 			.addOnSuccessListener(new OnSuccessListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
 				@Override
 				public void onSuccess (SnapshotsClient.DataOrConflict<Snapshot> unresolved_data) {
-					if (unresolved_data.isConflict()) {
-						//unresolved_data.getConflict();
+					if (unresolved_data.isConflict())
 						Log.d(TAG, "Snapshot::Write::Conflict");
-					}
-					else
-					{
-						Snapshot snapshot = unresolved_data.getData();
-						Log.d(TAG, "Snapshot::Write::" + game);
-						snapshot.getSnapshotContents().writeBytes(data);
-						mSnapshotsClient.commitAndClose(snapshot, SnapshotMetadataChange.EMPTY_CHANGE);
-					}
+					Snapshot snapshot = unresolved_data.getData();
+					Log.d(TAG, "Snapshot::Write::" + game);
+					snapshot.getSnapshotContents().writeBytes(data);
+					mSnapshotsClient.commitAndClose(snapshot, SnapshotMetadataChange.EMPTY_CHANGE);
 				}
 			})
 			.addOnFailureListener(new OnFailureListener() {
 				@Override
 				public void onFailure(@NonNull Exception e) {
 					Log.d(TAG, "Snapshot::Write::Failed:: " + e.toString());
+				}
+			});
+
+		} else { Log.i(TAG, "Google not connected calling connect"); }
+	}
+
+	public void load_game(final String game) {
+		connect();
+
+		if (isConnected()) {
+			mSnapshotsClient.open(game, true, SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED)
+			.addOnFailureListener(new OnFailureListener() {
+				@Override
+				public void onFailure(@NonNull Exception e) {
+					Log.d(TAG, "Snapshot::Read::Failed:: " + e.toString());
+				}
+			})
+			.continueWith(new Continuation<SnapshotsClient.DataOrConflict<Snapshot>, byte[]>() {
+				@Override
+				public byte[] then(@NonNull Task<SnapshotsClient.DataOrConflict<Snapshot>>task) throws Exception {
+					Snapshot snapshot = task.getResult().getData();
+					Log.d(TAG, "Snapshot::Read::" + game);
+					try {
+						return snapshot.getSnapshotContents().readFully();
+					} catch (IOException e) {
+						Log.e(TAG, "Snapshot::Read::Error:: ", e)
+					}
+					return null;
+				}
+			})addOnCompleteListener(new OnCompleteListener<byte[]>()) {
+				@Override
+				public void onComplete(@NonNull Task<byte[]> task) {
+					byte[] data = task.getResult();
+					GUtils.callScript("_game_loaded", new Object[] { game, new String(data) });
 				}
 			});
 

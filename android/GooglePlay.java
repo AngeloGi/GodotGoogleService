@@ -31,7 +31,7 @@ public class GooglePlay extends Godot.SingletonBase {
 			"init", "login", "logout", "unlock_achievement",
 			"increase_achievement", "show_achievements", "request_highscore",
 			"submit_leaderboard", "show_leaderboard", "show_leaderboards",
-			"get_version_code", "has_internet"
+			"get_version_code", "has_internet", "save_game", "load_game"
 		});
 
 		activity = p_activity;
@@ -88,6 +88,24 @@ public class GooglePlay extends Godot.SingletonBase {
 
 	public boolean isConnected() {
 		return PlayService.getInstance(activity).isConnected();
+	}
+
+	public void save_game(final String game, final String data)
+	{
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				PlayService.getInstance(activity).save_game(game, data.getBytes());
+			}
+		});
+	}
+
+	public void load_game(final String game)
+	{
+		activity.runOnUiThread(new Runnable() {
+			public void run() {
+				PlayService.getInstance(activity).load_game(game);
+			}
+		});
 	}
 
 	public void unlock_achievement(final String id) {
