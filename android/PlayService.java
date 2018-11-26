@@ -249,15 +249,16 @@ public class PlayService {
 			.addOnSuccessListener(new OnSuccessListener<AnnotatedData<LeaderboardScore>>() {
 				@Override
 				public void onSuccess (AnnotatedData<LeaderboardScore> data) {
-					if (data.isStale()) {
-						Log.d(TAG, "Leaderboard::Get::Failed:: Stale data");
-					}
-					else
-					{
+					int highscore = 0;
+					Log.d(TAG, "Leaderboard::Get::" + id);
+					if (data != null) {
+						if (data.isStale())
+							Log.d(TAG, "Leaderboard::Get:: Stale data");
 						LeaderboardScore score = data.get();
-						Log.d(TAG, "Leaderboard::Get::" + id);
-						GUtils.callScript("_player_score_received", new Object[] { new Integer((int) score.getRawScore()) });	
+						if (score != null)
+							highscore = (int) score.getRawScore();
 					}
+					GUtils.callScript("_player_score_received", new Object[] { new Integer(highscore) });	
 				}
 			})
 			.addOnFailureListener(new OnFailureListener() {
