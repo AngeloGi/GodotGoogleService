@@ -198,7 +198,7 @@ public class PlayService {
 					try {
 						return snapshot.getSnapshotContents().readFully();
 					} catch (IOException e) {
-						Log.e(TAG, "Snapshot::Read::Error:: ", e)
+						Log.e(TAG, "Snapshot::Read::Error:: ", e);
 					}
 					return null;
 				}
