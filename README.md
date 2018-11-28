@@ -2,7 +2,7 @@
 
 GodotGoogleService is a google play games integration for godot android;
 
-* Note for this Fork *
+* Note for this Fork:
 This fork was created to help other Godot developers get their games into Google Play, as no other version we've tried helped. It is tested working on Godot v3.1.
 
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](https://github.com/FrogSquare/GodotFireBase)
