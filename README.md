@@ -2,6 +2,9 @@
 
 GodotGoogleService is a google play games integration for godot android;
 
+* Note for this Fork:
+This fork was created to help other Godot developers get their games into Google Play, as no other version we've tried helped. It is tested working on Godot v3.1.
+
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](https://github.com/FrogSquare/GodotFireBase)
 [![GodotEngine](https://img.shields.io/badge/Godot_Engine-2.X%20/%203.X-blue.svg)](https://github.com/godotengine/godot)
 [![LICENCE](https://img.shields.io/badge/License-Apache_V2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
@@ -17,9 +20,9 @@ GodotGoogleService is a google play games integration for godot android;
 
 > Logout
 
-> achievements
+> Achievements
 
-> leaderboard
+> Leaderboard
 
 # Build/Compile module
 
@@ -65,13 +68,13 @@ func _receive_message(from, key, data):
 
 ```
 
-# google play service Signin / Signout
+# Google Play Service Sign In / Sign Out
 ```
 google.login()
 google.logout()
 ```
 
-# Google play achievements
+# Google Play Achievements
 ```
 google.unlock_achievement("achievementID") # unlock achievement;
 google.increse_achievement("achievementID", int(n)) # increse achievements by step.
@@ -94,6 +97,4 @@ google.get_version_code() # get package version code (Helper)
 ```
 adb -d logcat godot:V GoogleService:V SignInIntentService:V SignInIntentService:V SignInActivity:V DEBUG:V AndroidRuntime:V ValidateServiceOp:V *:S
 ```
-
-And if you are using [GodotFirebase](http://github.com/FrogSquare/GodotFireBase) add these, `GodotSQL:V FireBase:V` to the command
 
