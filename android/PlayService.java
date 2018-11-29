@@ -365,6 +365,8 @@ public class PlayService {
 
 			Log.w(TAG, "SignInResult::Failed code="
 			+ s.getStatusCode() + ", Message: " + s.getStatusMessage());
+			
+			GUtils.callScript("_google_sign_in_failed", new Object[] { });	
 
 			if (isResolvingConnectionFailure) { return; }
 			if (!isIntentInProgress && m_result.getStatus().hasResolution()) {
