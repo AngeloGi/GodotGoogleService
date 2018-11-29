@@ -12,5 +12,5 @@ def configure(env):
         env.android_add_res_dir("res");
         env.android_add_to_manifest("android/AndroidManifestChunk.xml");
         env.android_add_to_permissions("android/AndroidPermissionsChunk.xml");
-        env.android_add_default_config("applicationId 'com.NerfUs.BlunFlight'")
+        env.android_add_default_config("applicationId 'com.nerfus.littlegame'")
         env.disable_module()
