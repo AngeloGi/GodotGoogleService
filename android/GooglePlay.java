@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +32,8 @@ public class GooglePlay extends Godot.SingletonBase {
 			"init", "login", "logout", "unlock_achievement",
 			"increase_achievement", "show_achievements", "request_highscore",
 			"submit_leaderboard", "show_leaderboard", "show_leaderboards",
-			"get_version_code", "has_internet", "save_game", "load_game"
+			"get_version_code", "has_internet", "has_wifi",
+			"save_game", "load_game"
 		});
 
 		activity = p_activity;
@@ -41,6 +43,13 @@ public class GooglePlay extends Godot.SingletonBase {
 	{
 		ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		return cm.getActiveNetworkInfo() != null;
+	}
+	
+	public boolean has_wifi()
+	{
+		ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo mWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		return mWifi.isConnected();
 	}
 	
 	public int get_version_code(final int instanceID) {
